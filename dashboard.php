@@ -1,21 +1,34 @@
 <?php
-if (isset($_POST['valueToSearch'])) {
-    $valueToSearch = $_POST['valueToSearch'];
-    $query = "SELECT e.NAMES, e.SHORE, SKILL_DESCRIPTION 
-                FROM employees e, b_employee_skills es, skills s
-                WHERE e.EMP_ID = es.EMPLOYEE_ID
-                AND es.SKILL_ID = s.SKILL_ID";
-    
-    $search_result = filterTable($query);
-} else {
-    $query = "SELECT * FROM `employees`";
-    $search_result = filterTable($query);
+include './DBManager.php';
+
+/**
+ * 
+ */
+if (isset($_POST['txt_search']) && $_POST['txt_search'] != null) {
+    $_SESSION['search_text'] = $_POST['txt_search'];
+    $_SESSION['skills'] = array();
 }
 
-function filterTable($query) {
-    $connect = mysqli_connect("localhost", "root", "", "matrix");
-    $filter_Result = mysqli_query($connect, $query);
-    return $filter_Result;
+if (isset($_POST['s_skill']) && $_POST['s_skill'] != "View skill") {
+    $_SESSION['skills'][] = $_POST['s_skill'];
+}
+
+if ($_SESSION['search_text'] === "*") {
+    getAllEmployees();
+} else {
+    search($_SESSION['search_text']);
+}
+
+function array_remove_by_value($array, $value) {
+    return array_values(array_diff($array, array($value)));
+}
+
+foreach ($_SESSION['skills'] as $skill) {
+    if (isset($_POST[$skill])) {
+        unset($_SESSION['skills'][$skill]);
+        $_SESSION['skills'] = array_remove_by_value($_SESSION['skills'], $skill);
+        break;
+    }
 }
 ?>
 <!DOCTYPE html>
@@ -29,32 +42,79 @@ function filterTable($query) {
         <link href="Style.css" rel="stylesheet" type="text/css"/>
     </head>
     <body>
-<?php
-include './main_navigation.html';
-?>
+        <?php
+        include './main_navigation.html';
+        ?>
         <div class="container">
             <div class="row">
-                <div class="col-sm-8">
+                <div>
                     <h2>DashBoard</h2>
-                    <form action="index.php" method="POST">
-                        <input type="text" class="form-control" name="valueToSearch" placeholder="Enter Employee Name"><br></br>                   
+                    <form method="POST">
+                        <input type="text" class="form-control" name="txt_search" placeholder="Enter Employee Name"><br></br>                   
                         <div style="overflow-x:auto;">
-                            <table>
-                                <tr>
-                                    <th>First Name</th>
-                                    <th>Role</th>
-                                    <th>Skill 1</th>
-                                    <th>Skill 2</th>
-                                    <th>Skill 3</th>
+                            <table class="table">
+
+                                <thead>
+                                    <tr>
+                                        <th>First Name</th>
+                                        <th>Shore</th>
+                                        <?php if ($_SESSION['search']) { ?>
+                                            <th>Skill Description</th>
+                                            <th>LEVEL Description</th>
+                                        <?php } ?>
+                                        <?php
+                                        $counter = 1;
+                                        foreach ($_SESSION['skills'] as $skill) {
+                                            echo "<th><form method=\"POST\">" . $skill . "<button onclick=\"this.form.submit()\" name=\"" . $skill . "\" type=\"submit\" class=\"close\" aria-label=\"Close\">
+                                    <span aria-hidden=\"true\" style=\" float: right;\">&times;</span>
+                                    </button></form></th>";
+                                            $counter = $counter + 1;
+                                        }
+                                        ?>
+                                        <th>
+
+                                <form method="POST">
+                                    <select class="form-control" onchange="this.form.submit();" name="s_skill" style="width: 120px; float: right">
+                                        <option style="color: grey">View skill</option>
+                                        <?php
+                                        //$result = getSkillsRemaining();
+                                        //if (strlen($_SESSION['search_text']) > 0) {
+                                        $result = getSkillsAssociated($_SESSION['search_text']);
+                                        //}
+
+                                        while ($row = mysqli_fetch_array($result)) {
+                                            echo "<option class=\"form-control form-control-sm\" value=\"" . $row['SKILL_DESCRIPTION'] . "\">" . $row['SKILL_DESCRIPTION'] . "</option>";
+                                        }
+                                        ?>
+
+                                    </select>
+                                </form></th>
+
                                 </tr>
-                                <?php while ($row = $search_result->fetch_assoc()): ?>
+                                </thead>
+                                <?php while ($row = mysqli_fetch_array($search_result)): ?>
                                     <tr>
                                         <td><?php echo $row['NAMES']; ?></td>
                                         <td><?php echo $row['SHORE']; ?></td>
-                                        <td><?php echo $row['SKILL_DESCRIPTION']; ?></td>
+
+
+                                        <?php
+                                        foreach ($_SESSION['skills'] as $skill) {
+
+                                            echo "<td>" . getEmployeeSkillLevel($row['emp_id'], $skill) . "</td>";
+                                        }
+                                        ?>
+
+
+                                        <?php if ($_SESSION['search']) { ?>
+                                            <td><?php echo $row['SKILL_DESCRIPTION']; ?></td>
+                                            <td><?php echo $row['LEVEL_DESCR']; ?></td>
+                                        <?php } ?>
+                                        <td></td>
                                     </tr>
                                 <?php endwhile; ?>
                             </table>
+                            <p> Create report<p>
                         </div>
                         <br>
                     </form>
