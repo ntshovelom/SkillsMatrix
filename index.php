@@ -5,10 +5,8 @@
         <title></title>
     </head>
     <body>
-
         <?php
         session_start();
-        include './utility.php';
         include './dashboard.php';
         ?>  
     </div>
