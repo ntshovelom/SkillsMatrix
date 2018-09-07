@@ -147,8 +147,6 @@ session_start();
                     </p>
                     <button name="btn_finish" style="float: right;" type="submit" class="btn btn-block btn-primary">Add Resource</button>
                 </div>
-
-
             </form>
         </div>
     </body>
