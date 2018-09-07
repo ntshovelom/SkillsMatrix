@@ -21,7 +21,7 @@ if (isset($_POST['AddRole'])) {
         executeSQLQuery($newSkill);
 
         $success = '<div class="alert alert-success">'
-                . '<strong>Role Add!</strong>'
+                . '<strong>' . $_POST['role'] . ' Added!</strong>'
                 . '</div>';
     }
 }

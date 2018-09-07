@@ -125,7 +125,7 @@ session_start();
                         </div>
                     </div>
                     </p>
-                    <div style="height: 50%; overflow-y: auto">
+                    <div style="max-height: 50%; overflow-y: scroll">
                         <?php
                         $counter = 0;
                         while ($counter < sizeof($_SESSION['add_skills'])) {
