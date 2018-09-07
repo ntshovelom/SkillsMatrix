@@ -1,6 +1,30 @@
 <?php
 include './main_navigation.html';
 include './DBManager.php';
+$queryCateG = "SELECT  DIVISION_ID ,DIV_DESCRIPTION FROM divisions ORDER BY DIV_DESCRIPTION;";
+$allCateG = executeSQLQuery($queryCateG);
+$faildF = FALSE;
+
+if (isset($_POST['AddRole'])) {
+
+    $query1 = "SELECT * FROM roles WHERE ROLE_DESCRIPTION = '$_POST[role]'";
+    $result = executeSQLQuery($query1);
+    $data = mysqli_fetch_array($result, MYSQLI_NUM);
+
+    if ($data[0] > 1) {
+        $faild = '<div class="alert alert-danger">'
+                . '<strong>Role Already in Exists!</strong>'
+                . '</div>';
+        $faildF = True;
+    } else {
+        $newSkill = "INSERT INTO roles(ROLE_DESCRIPTION,DIVISION_ID) values('" . $_POST['role'] . "'," . $_POST['division'] . ")";
+        executeSQLQuery($newSkill);
+
+        $success = '<div class="alert alert-success">'
+                . '<strong>Role Add!</strong>'
+                . '</div>';
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -11,44 +35,18 @@ include './DBManager.php';
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     </head>
-    <?php
-    $queryCateG = "SELECT  DIVISION_ID ,DIV_DESCRIPTION FROM divisions;";
-    $allCateG = executeSQLQuery($queryCateG);
-    $faildF = FALSE;
 
-    if (isset($_POST['AddRole'])) {
-
-        $query1 = "SELECT * FROM roles WHERE ROLE_DESCRIPTION = '$_POST[role]'";
-        $result = executeSQLQuery($query1);
-        $data = mysqli_fetch_array($result, MYSQLI_NUM);
-
-        if ($data[0] > 1) {
-            $faild = '<div class="alert alert-danger">'
-                    . '<strong>Role Already in Exists!</strong>'
-                    . '</div>';
-            $faildF = True;
-        } else {
-            $newSkill = "INSERT INTO roles(ROLE_DESCRIPTION,DIVISION_ID) values('" . $_POST['role'] . "'," . $_POST['division'] . ")";
-            executeSQLQuery($newSkill);
-
-            $success = '<div class="alert alert-success">'
-                    . '<strong>Role Add!</strong>'
-                    . '</div>';
-        }
-    }
-    ?>
     <body>
         <div class="container">
             <form method="POST">
-                <h2>Add new Role</h2>
-                <br></br>
+                <h1>New Role</h1>
                 <div class="input-group">
                     <span class="input-group-addon">Role</span>
                     <input id="msg" type="text" class="form-control" name="role" placeholder="Enter role Name" required>
                 </div>
                 </p>
                 <div class="input-group">
-                    <span class="input-group-addon">Select  Division</span>
+                    <span class="input-group-addon">Division</span>
                     <select class="form-control" name="division">
                         <?php
                         while ($row = mysqli_fetch_array($allCateG)) {
@@ -74,8 +72,11 @@ include './DBManager.php';
 </html>
 <style>
 
-   body {
+    body {
         background-color: #f1f1f1;
+    }
+    h1 {
+        text-align: center;  
     }
 </style>
 

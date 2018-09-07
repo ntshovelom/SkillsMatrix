@@ -13,7 +13,7 @@ session_start();
     }
 
 
-    $queryRoles = "SELECT ROLE_ID, ROLE_DESCRIPTION FROM roles";
+    $queryRoles = "SELECT ROLE_ID, ROLE_DESCRIPTION FROM roles ORDER BY ROLE_DESCRIPTION";
     $allRoles = executeSQLQuery($queryRoles);
     $name = "";
     $shore = "";
@@ -51,41 +51,41 @@ session_start();
     <body>
         <div class="container">
             <form method="POST">
-                <h1>Add New Resource</h1>
+                <h1>New Resource</h1>
                 <div class="input-group">
-                <span class="input-group-addon">Resource Names</span>
-                <input class="form-control" type="text" placeholder="Enter Name" <?php
-                if (strlen($name) > 0) {
-                    echo 'value="' . $name . '"';
-                }
-                ?> name="name" required>
-                </div>
-                </p>
-                <div class="input-group">
-                <span class="input-group-addon">Shore</span>
-                <select class="form-control" id="shore" name="shore" >
-                    <option  value="Onshore">Onshore</option>
-                    <option <?php
-                    if ($shore === "Offshore") {
-                        echo 'selected';
+                    <span class="input-group-addon">Resource</span>
+                    <input class="form-control" type="text" placeholder="Please enter full names" <?php
+                    if (strlen($name) > 0) {
+                        echo 'value="' . $name . '"';
                     }
-                    ?> value="Offshore">Offshore</option>
-                </select>
+                    ?> name="name" required>
                 </div>
                 </p>
                 <div class="input-group">
-                <span class="input-group-addon">Employee Role :</span>
-                <select  class="form-control" name="empRole">
-                    <?php
-                    while ($row = $allRoles->fetch_assoc()) :
-                        $selected = "";
-                        if ($row['ROLE_DESCRIPTION'] === getRoleByID($role)) {
-                            $selected = "selected";
+                    <span class="input-group-addon">Shore</span>
+                    <select class="form-control" id="shore" name="shore" >
+                        <option  value="Onshore">Onshore</option>
+                        <option <?php
+                        if ($shore === "Offshore") {
+                            echo 'selected';
                         }
-                        echo '<option ' . $selected . ' value="' . $row['ROLE_ID'] . '">' . $row['ROLE_DESCRIPTION'] . '</option>';
-                    endwhile;
-                    ?>
-                </select>
+                        ?> value="Offshore">Offshore</option>
+                    </select>
+                </div>
+                </p>
+                <div class="input-group">
+                    <span class="input-group-addon">Role :</span>
+                    <select  class="form-control" name="empRole">
+                        <?php
+                        while ($row = $allRoles->fetch_assoc()) :
+                            $selected = "";
+                            if ($row['ROLE_DESCRIPTION'] === getRoleByID($role)) {
+                                $selected = "selected";
+                            }
+                            echo '<option ' . $selected . ' value="' . $row['ROLE_ID'] . '">' . $row['ROLE_DESCRIPTION'] . '</option>';
+                        endwhile;
+                        ?>
+                    </select>
                 </div>
                 </p>
                 <div>
@@ -145,7 +145,7 @@ session_start();
                         ?>
                     </div>
                     </p>
-                    <button name="btn_finish" style="float: right;" type="submit" class="btn btn-block btn-primary">Finish</button>
+                    <button name="btn_finish" style="float: right;" type="submit" class="btn btn-block btn-primary">Add Resource</button>
                 </div>
 
 

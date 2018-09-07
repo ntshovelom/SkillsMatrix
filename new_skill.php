@@ -1,6 +1,32 @@
 <?php
 include './main_navigation.html';
 include './DBManager.php';
+
+
+$queryCateG = "SELECT  ID, CATEG_DESCRIPTION FROM skill_category ORDER BY CATEG_DESCRIPTION;";
+$allCateG = executeSQLQuery($queryCateG);
+$faildF = FALSE;
+
+if (isset($_POST['AddSkill'])) {
+
+    $query1 = "SELECT * FROM skills WHERE SKILL_DESCRIPTION = '$_POST[skill]'";
+    $result = executeSQLQuery($query1);
+    $data = mysqli_fetch_array($result, MYSQLI_NUM);
+
+    if ($data[0] > 1) {
+        $faild = '<div class="alert alert-danger">'
+                . '<strong>Skill Already in Exists!</strong>'
+                . '</div>';
+        $faildF = True;
+    } else {
+        $newSkill = "INSERT INTO skills(SKILL_DESCRIPTION,CATEG_ID) values('" . $_POST['skill'] . "'," . $_POST['category'] . ")";
+        executeSQLQuery($newSkill);
+
+        $success = '<div class="alert alert-success">'
+                . '<strong>' . $_POST['skill'] . ' Added!</strong>'
+                . '</div>';
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -11,44 +37,17 @@ include './DBManager.php';
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     </head>
-    <?php
-    $queryCateG = "SELECT  ID ,CATEG_DESCRIPTION FROM skill_category;";
-    $allCateG = executeSQLQuery($queryCateG);
-    $faildF = FALSE;
-
-    if (isset($_POST['AddSkill'])) {
-
-        $query1 = "SELECT * FROM skills WHERE SKILL_DESCRIPTION = '$_POST[skill]'";
-        $result = executeSQLQuery($query1);
-        $data = mysqli_fetch_array($result, MYSQLI_NUM);
-
-        if ($data[0] > 1) {
-            $faild = '<div class="alert alert-danger">'
-                    . '<strong>Skill Already in Exists!</strong>'
-                    . '</div>';
-            $faildF = True;
-        } else {
-            $newSkill = "INSERT INTO skills(SKILL_DESCRIPTION,CATEG_ID) values('" . $_POST['skill'] . "'," . $_POST['category'] . ")";
-            executeSQLQuery($newSkill);
-
-            $success = '<div class="alert alert-success">'
-                    . '<strong>Skill Add!</strong>'
-                    . '</div>';
-        }
-    }
-    ?>
     <body>
         <div class="container">
             <form method="POST">
-                <h2>Add new Skill</h2>
-                <br></br>
+                <h1>New Skill</h1>
                 <div class="input-group">
                     <span class="input-group-addon">Skill</span>
                     <input id="msg" type="text" class="form-control" name="skill" placeholder="Enter Skill Name" required>
                 </div>
                 </p>
                 <div class="input-group">
-                    <span class="input-group-addon">Select Skill Category</span>
+                    <span class="input-group-addon">Category</span>
                     <select class="form-control" name="category">
                         <?php
                         while ($row = mysqli_fetch_array($allCateG)) {
@@ -73,8 +72,12 @@ include './DBManager.php';
 </html>
 <style>
 
-   body {
+    body {
         background-color: #f1f1f1;
+        font: serif;
+    }
+    h1 {
+        text-align: center;  
     }
 </style>
 
