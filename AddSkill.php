@@ -71,7 +71,12 @@ include './DBManager.php';
         </div>
     </body>
 </html>
+<style>
 
+   body {
+        background-color: #f1f1f1;
+    }
+</style>
 
 
 

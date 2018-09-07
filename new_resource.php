@@ -49,16 +49,20 @@ session_start();
     $levels = getLevels();
     ?>
     <body>
-        <div class="container" style="background-color: white">
+        <div class="container">
             <form method="POST">
                 <h1>Add New Resource</h1>
-                <label for="email"><b>Resource Names</b></label>
+                <div class="input-group">
+                <span class="input-group-addon">Resource Names</span>
                 <input class="form-control" type="text" placeholder="Enter Name" <?php
                 if (strlen($name) > 0) {
                     echo 'value="' . $name . '"';
                 }
                 ?> name="name" required>
-                <label for="psw"><b>Shore :</b></label>
+                </div>
+                </p>
+                <div class="input-group">
+                <span class="input-group-addon">Shore</span>
                 <select class="form-control" id="shore" name="shore" >
                     <option  value="Onshore">Onshore</option>
                     <option <?php
@@ -67,7 +71,10 @@ session_start();
                     }
                     ?> value="Offshore">Offshore</option>
                 </select>
-                <label for="psw-repeat"><b>Employee Role :</b></label>
+                </div>
+                </p>
+                <div class="input-group">
+                <span class="input-group-addon">Employee Role :</span>
                 <select  class="form-control" name="empRole">
                     <?php
                     while ($row = $allRoles->fetch_assoc()) :
@@ -79,6 +86,8 @@ session_start();
                     endwhile;
                     ?>
                 </select>
+                </div>
+                </p>
                 <div>
                     <button type="button" class="btn-default btn-lg" data-toggle="modal" data-target="#myModal">Add Skill</button>
 
@@ -106,13 +115,16 @@ session_start();
                                             <?php } ?>
                                         </select>
                                     </div>
+                                    </p>
                                     <div class="modal-footer">
                                         <button type="button" onclick="this.form.submit()" id="btnSave" class="btn btn-default" data-dismiss="modal" name="btn_save">Save</button>
                                     </div>
                                 </div>
+                                </p>
                             </form>
                         </div>
                     </div>
+                    </p>
                     <div style="height: 50%; overflow-y: auto">
                         <?php
                         $counter = 0;
@@ -132,6 +144,7 @@ session_start();
                         }
                         ?>
                     </div>
+                    </p>
                     <button name="btn_finish" style="float: right;" type="submit" class="btn btn-block btn-primary">Finish</button>
                 </div>
 
@@ -140,124 +153,6 @@ session_start();
         </div>
     </body>
 </html>
-<?php
-
-function xyz() {
-    header("Location: dashboard.php");
-    return "fnjkngkfjksg";
-}
-?>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 <style>
     * {

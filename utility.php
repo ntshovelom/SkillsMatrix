@@ -5,9 +5,9 @@ session_start();
 $_SESSION['search_text'] = '*';
 $_SESSION['search'] = false;
 
-$_SESSION['show_offshore'] = false;
-$_SESSION['show_onshore'] = false;
-$_SESSION['show_role'] = false;
+$_SESSION['show_offshore'] = true;
+$_SESSION['show_onshore'] = true;
+$_SESSION['show_role'] = true;
 $_SESSION['show_division'] = false;
 
 $_SESSION['skills'] = array();

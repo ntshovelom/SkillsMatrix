@@ -126,7 +126,7 @@ function array_remove_by_value($array, $value) {
                                     ?>
                                     <tr style="background-color:  <?php
                                     if ($row['SHORE'] === "Onshore") {
-                                        echo '#999999';
+                                        echo '#f1f1f1';
                                     } else {
                                         echo 'white';
                                     }
@@ -153,12 +153,12 @@ function array_remove_by_value($array, $value) {
                             </table>
                         </div>
                         <div style="position: absolute; right: 100px; top: 370px">
-                            <div class="color_card" style="background-color: #999999"><button style="color: <?php
+                            <div class="color_card" style=""><button style="color: <?php
                                 if ($_SESSION['show_onshore'] === false) {
                                     echo 'grey';
                                 }
                                 ?>" onclick="this.form.submit()" name="sb_onshore" type="submit" class="btn btn-link">Onshore</button> </div>
-                            <div class="color_card" style="color: grey;"><button style="color: <?php
+                            <div class="color_card" style="color: grey;background-color: white"><button style="color: <?php
                                 if ($_SESSION['show_offshore'] === false) {
                                     echo 'grey';
                                 }
@@ -209,6 +209,9 @@ function array_remove_by_value($array, $value) {
 
 
 <style>
+     body {
+        background-color: #f1f1f1;
+    }
     .color_card {
         color: #fff;
         font-family: 'Helvetica', 'Arial', sans-serif;
