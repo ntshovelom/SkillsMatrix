@@ -1,10 +1,7 @@
 <?php
 
-static $search_result;
-
 function getAllEmployees() {
-    global $search_result;
-    $query = "SELECT distinct e.NAMES, emp_id, e.SHORE, r.ROLE_DESCRIPTION, d.DIV_DESCRIPTION
+    $query = "SELECT distinct e.NAMES, EMP_ID, e.SHORE, r.ROLE_DESCRIPTION, d.DIV_DESCRIPTION
                 FROM employees e, b_employee_skills es, roles r, divisions d
                 WHERE e.role_id = r.role_id 
                 AND r.division_id = d.division_id ";
@@ -17,7 +14,7 @@ function getAllEmployees() {
     }
 
     $query = $query . " ORDER BY e.shore DESC, e.NAMES ASC";
-    $search_result = executeSQLQuery($query);
+    return executeSQLQuery($query);
 }
 
 function getSkillsAssociated($search_text) {
@@ -53,7 +50,7 @@ function getSkillsAssociated($search_text) {
     endwhile;
     $condition2 = $condition2 . ") ";
 
-    $query = "SELECT distinct es.SKILL_ID "
+    $query = "SELECT distinct es.SKILL_ID, SKILL_DESCRIPTION "
             . "FROM b_employee_skills es, skills s "
             . " WHERE es.skill_id = s.skill_id "
             . " and employee_id " . $condition2 . $condition . " ORDER BY SKILL_DESCRIPTION";
@@ -113,8 +110,7 @@ function getSkillsRemaining($skills) {
 }
 
 function search($search_text) {
-    global $search_result;
-    $query = "SELECT distinct(e.NAMES), emp_id, e.SHORE, r.ROLE_DESCRIPTION, d.DIV_DESCRIPTION
+    $query = "SELECT distinct(e.NAMES), EMP_ID, e.SHORE, r.ROLE_DESCRIPTION, d.DIV_DESCRIPTION
             FROM employees e, b_employee_skills es, skills s, m_skills_level sl, roles r, divisions d
             WHERE  e.EMP_ID = es.EMPLOYEE_ID
             AND es.SKILL_ID = s.SKILL_ID
@@ -132,11 +128,10 @@ function search($search_text) {
         $query = $query . " AND e.shore <> 'Offshore'";
     }
     $query = $query . " ORDER BY e.shore DESC, e.NAMES ";
-    $search_result = executeSQLQuery($query);
+    return executeSQLQuery($query);
 }
 
 function findEmpBySkills() {
-    global $search_result;
     $condition = "WHERE SKILL_DESCRIPTION <> '" . $_SESSION['skills'][0] . "' ";
     for ($x = 1; $x < sizeof($_SESSION['skills']); $x++) {
         $condition = $condition . " OR SKILL_DESCRIPTION = '" . $_SESSION['skills'][$x] . "' ";
@@ -147,7 +142,7 @@ function findEmpBySkills() {
                 WHERE e.EMP_ID = es.EMPLOYEE_ID
                 AND es.LEVEL_ID = sl.LEVEL_ID
                 AND es.SKILL_ID = s.SKILL_ID";
-    $search_result = executeSQLQuery($query);
+    return executeSQLQuery($query);
 }
 
 function executeSQLQuery($query) {

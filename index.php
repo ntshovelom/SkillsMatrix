@@ -7,7 +7,7 @@
     <body>
         <?php
         session_start();
-        include './dashboard.php';
+        include './login.php';
         ?>  
     </div>
 </body>

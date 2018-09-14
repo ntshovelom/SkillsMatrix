@@ -1,5 +1,5 @@
 <?php
-include './main_navigation.html';
+include './main_navigation.php';
 include './DBManager.php';
 $queryCateG = "SELECT  DIVISION_ID ,DIV_DESCRIPTION FROM divisions ORDER BY DIV_DESCRIPTION;";
 $allCateG = executeSQLQuery($queryCateG);

@@ -1,6 +1,8 @@
 <?php
+session_start();
 include './DBManager.php';
-
+include './ReportMaker.php';
+$search_result;
 /**
  * 
  */
@@ -52,9 +54,9 @@ if (isset($_POST['s_skill']) && $_POST['s_skill'] != "View skill") {
  * searches employees based on search_text
  */
 if ($_SESSION['search_text'] === "*") {
-    getAllEmployees();
+    $search_result = getAllEmployees();
 } else {
-    search($_SESSION['search_text']);
+    $search_result = search($_SESSION['search_text']);
 }
 
 /**
@@ -71,6 +73,10 @@ foreach ($_SESSION['skills'] as $skill) {
 function array_remove_by_value($array, $value) {
     return array_values(array_diff($array, array($value)));
 }
+
+if (isset($_POST['btn_report'])) {
+    createReport();
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -85,7 +91,7 @@ function array_remove_by_value($array, $value) {
     </head>
     <body>
         <?php
-        include './main_navigation.html';
+        include './main_navigation.php';
         ?>
         <div class="container">
             <div class="row">
@@ -93,7 +99,7 @@ function array_remove_by_value($array, $value) {
                     <h2>DashBoard</h2>
                     <form method="POST">
                         <input type="text" class="form-control" name="txt_search" placeholder="Enter keyword OR * to see all employees"><br></br>                   
-                        <div style="overflow:auto; height: 50%">
+                        <div style="overflow:auto; height: 440px">
                             <table class="table table-hover">
                                 <thead>
                                     <tr >
@@ -192,8 +198,7 @@ function array_remove_by_value($array, $value) {
                             </div>
 
                         </div>
-                        <p style="padding: 0"> Create report<p>
-
+                        <p style="padding: 0"> <form method="POST"><button onclick="this.form.submit()" name="btn_report" style="float: right;" type="submit" class="btn btn-block btn-primary">Download Report</button></form><p>
                     </form>
                 </div>
             </div>
@@ -209,7 +214,7 @@ function array_remove_by_value($array, $value) {
 
 
 <style>
-     body {
+    body {
         background-color: #f1f1f1;
     }
     .color_card {

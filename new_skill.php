@@ -1,5 +1,5 @@
 <?php
-include './main_navigation.html';
+include './main_navigation.php';
 include './DBManager.php';
 
 

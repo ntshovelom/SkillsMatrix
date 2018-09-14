@@ -1,5 +1,5 @@
 <?php
-include './main_navigation.html';
+include './main_navigation.php';
 include './DBManager.php';
 session_start();
 ?>
@@ -8,8 +8,15 @@ session_start();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
     <?php
+    $error = '';
     if (isset($_POST['btn_finish'])) {
-        addResource($_POST['name'], $_POST['shore'], $_POST['empRole'], $_POST['skill'], $_POST['level']);
+        if (sizeof($_SESSION['add_skills']) > 0) {
+            addResource($_POST['name'], $_POST['shore'], $_POST['empRole'], $_POST['skill'], $_POST['level']);
+        } else {
+            $error = '<div class="alert alert-danger">'
+                    . '<strong>Please include some of the skills of the resource</strong>'
+                    . '</div>';
+        }
     }
 
 
@@ -52,6 +59,7 @@ session_start();
         <div class="container">
             <form method="POST">
                 <h1>New Resource</h1>
+                <?php echo $error; ?>
                 <div class="input-group">
                     <span class="input-group-addon">Resource</span>
                     <input class="form-control" type="text" placeholder="Please enter full names" <?php
