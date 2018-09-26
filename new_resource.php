@@ -1,7 +1,6 @@
 <?php
 include './main_navigation.php';
 include './DBManager.php';
-session_start();
 ?>
 <!DOCTYPE html>
 <html>
@@ -18,8 +17,6 @@ session_start();
                     . '</div>';
         }
     }
-
-
     $queryRoles = "SELECT ROLE_ID, ROLE_DESCRIPTION FROM roles ORDER BY ROLE_DESCRIPTION";
     $allRoles = executeSQLQuery($queryRoles);
     $name = "";

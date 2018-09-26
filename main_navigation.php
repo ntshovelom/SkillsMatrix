@@ -1,4 +1,12 @@
 <!DOCTYPE html>
+<?php
+session_start();
+if (isset($_SESSION['user'])) {
+    
+} else {
+    header("Location: login.php");
+}
+?>
 <html>
     <head>
         <meta charset="utf-8">
@@ -15,11 +23,11 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>                        
                 </button>
-                <a class="navbar-brand" href="index.php">Skills Matrix</a>
+                <a class="navbar-brand" href="dashboard.php">Skills Matrix</a>
             </div>
             <div class="collapse navbar-collapse" id="myNavbar">
                 <ul class="nav navbar-nav">
-                    <li class="active"><a href="index.php">Home</a></li>
+                    <!--                    <li class="active"><a href="dashboard.php">Home</a></li>-->
                     <li><a href="new_resource.php">New Resource</a></li>
                     <li><a href="new_role.php">New Role</a></li>
                     <li><a href="new_skill.php">New Skill</a></li>

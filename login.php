@@ -2,34 +2,37 @@
 include './DBManager.php';
 $faild = "";
 if (isset($_POST['btn_login'])) {
-    $email = $_POST['txt_email'];
+    $user = $_POST['txt_user'];
     $pass = $_POST['pwd'];
 
-    $query1 = "SELECT * FROM users WHERE email = '$email' AND PASS = '$pass'";
+    $query1 = "SELECT * FROM users WHERE username = '$user' AND PASS = '$pass'";
     $result = executeSQLQuery($query1);
     $data = mysqli_fetch_array($result, MYSQLI_NUM);
     if ($result->num_rows < 1) {
         $faild = '<div class="alert alert-danger">'
-                . '<strong>Wrong Email or Password!</strong>'
+                . '<strong>Wrong Username or Password!</strong>'
                 . '</div>';
     } else {
         session_start();
-        $_SESSION['email'] = $email;
+
+        $_SESSION['user'] = $user;
         $_SESSION['pass'] = $pass;
 
-        $_SESSION['search_text'] = '*';
+        $_SESSION['search_text'] = 'MS Word';
         $_SESSION['search'] = false;
-
+        $_SESSION['reporting'] = false;
         $_SESSION['show_offshore'] = true;
         $_SESSION['show_onshore'] = true;
-        $_SESSION['show_role'] = true;
+        $_SESSION['show_role'] = false;
         $_SESSION['show_division'] = false;
+        $_SESSION['show_action'] = true;
 
         $_SESSION['skills'] = array();
         $_SESSION['skills_ids'] = array();
 
         $_SESSION['add_skills'] = array();
         $_SESSION['add_levels'] = array();
+        $_SESSION['hint'] = 'Enter keyword OR * to see all employees';
 
         header("Location: dashboard.php");
     }
@@ -57,13 +60,13 @@ if (isset($_POST['btn_login'])) {
                 <h1>Login</h1>
                 <?php echo $faild; ?>
                 <div class="input-group">
-                    <span class="input-group-addon">Email</span>
-                    <input id="msg" type="text" class="form-control" value="andile.hlophe@zensar.com" name="txt_email" placeholder="John.Smith@gmail.com" required>
+                    <span class="input-group-addon">Username</span>
+                    <input id="msg" type="text" class="form-control" value="root" name="txt_user" placeholder="Please enter username" required>
                 </div>
                 </p>
                 <div class="input-group">
                     <span class="input-group-addon">Password</span>
-                    <input id="msg" type="password" class="form-control" value="Zxc@123" name="pwd" placeholder="Password" required>
+                    <input id="msg" type="password" class="form-control" value="S3qcsSG" name="pwd" placeholder="Password" required>
                 </div>
                 <br></br>
                 <button type="submit" onclick="this.form.submit();" class="btn btn-primary btn-block" name="btn_login">Login</button>

@@ -1,17 +1,19 @@
 <?php
-session_start();
+include './main_navigation.php';
 include './DBManager.php';
 include './ReportMaker.php';
 $search_result;
+
 /**
  * 
  */
 foreach ($_SESSION['skills'] as $skill) {
-    if (isset($_POST[$skill . '_link'])) {
+    if (isset($_POST[$skill . '_skill_link'])) {
         $_SESSION['search_text'] = getSkillByID($skill);
         $_SESSION['skills'] = array($skill);
     }
 }
+
 if (isset($_POST['txt_search']) && $_POST['txt_search'] != null) {
     $_SESSION['search_text'] = $_POST['txt_search'];
     $_SESSION['skills'] = array();
@@ -45,6 +47,14 @@ if (isset($_POST['txt_search']) && $_POST['txt_search'] != null) {
             $_SESSION['show_role'] = true;
         }
     }
+
+    if (isset($_POST['sb_action'])) {
+        if ($_SESSION['show_action'] === true) {
+            $_SESSION['show_action'] = false;
+        } else {
+            $_SESSION['show_action'] = true;
+        }
+    }
 }
 if (isset($_POST['s_skill']) && $_POST['s_skill'] != "View skill") {
     $_SESSION['skills'][] = '' . $_POST['s_skill'];
@@ -63,7 +73,7 @@ if ($_SESSION['search_text'] === "*") {
  * Removes skill tab from the table
  */
 foreach ($_SESSION['skills'] as $skill) {
-    if (isset($_POST[$skill . '_delete'])) {
+    if (isset($_POST[$skill . '_skill_delete'])) {
         unset($_SESSION['skills'][$skill]);
         $_SESSION['skills'] = array_remove_by_value($_SESSION['skills'], $skill);
         break;
@@ -77,6 +87,20 @@ function array_remove_by_value($array, $value) {
 if (isset($_POST['btn_report'])) {
     createReport();
 }
+
+
+while ($row = mysqli_fetch_array($search_result)) {
+    if (isset($_POST[$row['EMP_ID'] . '_act_delete'])) {
+        deleteEmpByID($row['EMP_ID']);
+    } else if (isset($_POST[$row['EMP_ID'] . '_act_update'])) {
+        //header("Location: new_resource.php");
+    }
+}
+if ($_SESSION['search_text'] === "*") {
+    $search_result = getAllEmployees();
+} else {
+    $search_result = search($_SESSION['search_text']);
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -86,35 +110,35 @@ if (isset($_POST['btn_report'])) {
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-        <link href="Style.css" rel="stylesheet"/>
+        <link href="Style.css" rel="stylesheet" type="text/css"/>
 
     </head>
     <body>
-        <?php
-        include './main_navigation.php';
-        ?>
         <div class="container">
             <div class="row">
                 <div>
                     <h2>DashBoard</h2>
                     <form method="POST">
-                        <input type="text" class="form-control" name="txt_search" placeholder="Enter keyword OR * to see all employees"><br></br>                   
+                        <input type="text" class="form-control" name="txt_search" placeholder="<?php echo $_SESSION['search_text']; ?>"><br></br>                   
                         <div style="overflow:auto; height: 440px">
                             <table class="table table-hover">
                                 <thead>
-                                    <tr >
+                                    <tr style="max-height: 1px">
                                         <th>#</th>
                                         <th>Resource</th>
                                         <?php if ($_SESSION['show_division'] === true) { ?>
                                             <th>Division</th>
                                         <?php } if ($_SESSION['show_role'] === true) { ?>
                                             <th>Role</th>
+                                        <?php } if ($_SESSION['show_action'] === true) { ?>
+                                            <th></th>
+                                            <th></th>
                                         <?php } foreach ($_SESSION['skills'] as $skill) { ?>
                                             <th>
                                     <div style="height: 30pt">
                                         <form method="POST">
-                                            <button onclick="this.form.submit()" name="<?php echo $skill . '_link' ?>" type="submit" class="btn btn-link"> <?php echo getSkillByID($skill) ?></button> 
-                                            <button onclick="this.form.submit()" name="<?php echo $skill . '_delete' ?>"  type="submit" class="close" aria-label="Close">
+                                            <button onclick="this.form.submit()" name="<?php echo $skill . '_skill_link' ?>" type="submit" class="btn btn-link"> <?php echo getSkillByID($skill) ?></button> 
+                                            <button onclick="this.form.submit()" name="<?php echo $skill . '_skill_delete' ?>"  type="submit" class="close" aria-label="Close">
                                                 <span  aria-hidden="true" >&times;</span>
                                             </button></form>
                                     </div>
@@ -147,13 +171,15 @@ if (isset($_POST['btn_report'])) {
                                         if ($_SESSION['show_role'] === true) {
                                             ?>
                                             <td><button  type="button" class="btn btn-link"><?php echo $row['ROLE_DESCRIPTION']; ?> </button></td>
-
-
+                                        <?php } if ($_SESSION['show_action']) { ?>
+                                            <td><button class="btn btn-primary" name="<?php echo $row['EMP_ID'] . '_act_update' ?>">Update</button></td>
+                                            <td><button class="btn btn-danger" name="<?php echo $row['EMP_ID'] . '_act_delete' ?>">Delete</button></td>
+                                            <?php ?>
                                         <?php } foreach ($_SESSION['skills'] as $skill) { ?>
-                                            <td><?php echo getEmployeeSkillLevel($row['emp_id'], $skill) ?> </td>
+                                            <td><?php echo getEmployeeSkillLevel($row['EMP_ID'], $skill) ?> </td>
                                         <?php }
                                         ?>
-                                        <td></td>
+
                                     </tr>
                                 <?php endwhile; ?>
                             </table>
@@ -172,15 +198,23 @@ if (isset($_POST['btn_report'])) {
                         </div>
                         <div id="tabs" style="display: flex;">
                             <div class="color_card" ><button style="color: <?php
+                                if ($_SESSION['show_action'] === false) {
+                                    echo 'grey';
+                                }
+                                ?>" onclick="this.form.submit()" name="sb_action" type="submit" class="btn btn-link">Action</button>
+                            </div>
+                            <div class="color_card" ><button style="color: <?php
                                 if ($_SESSION['show_division'] === false) {
                                     echo 'grey';
                                 }
-                                ?>" onclick="this.form.submit()" name="sb_division" type="submit" class="btn btn-link">Division</button> </div>
+                                ?>" onclick="this.form.submit()" name="sb_division" type="submit" class="btn btn-link">Division</button>
+                            </div>
                             <div class="color_card" style="color: grey;"><button style="color: <?php
                                 if ($_SESSION['show_role'] === false) {
                                     echo 'grey';
                                 }
-                                ?>" onclick="this.form.submit()" name="sb_role" type="submit" class="btn btn-link">Role</button> </div>
+                                ?>" onclick="this.form.submit()" name="sb_role" type="submit" class="btn btn-link">Role</button> 
+                            </div>
 
                             <div class="color_card" style="width: 120px"> 
                                 <form method="POST">
@@ -235,3 +269,5 @@ if (isset($_POST['btn_report'])) {
         margin: 0 auto;
     }
 </style>
+
+

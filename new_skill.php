@@ -8,7 +8,6 @@ $allCateG = executeSQLQuery($queryCateG);
 $faildF = FALSE;
 
 if (isset($_POST['AddSkill'])) {
-
     $query1 = "SELECT * FROM skills WHERE SKILL_DESCRIPTION = '$_POST[skill]'";
     $result = executeSQLQuery($query1);
     $data = mysqli_fetch_array($result, MYSQLI_NUM);

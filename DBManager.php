@@ -19,10 +19,12 @@ function getAllEmployees() {
 
 function getSkillsAssociated($search_text) {
     $condition = "";
-    if (sizeof($_SESSION['skills']) > 0) {
-        $condition = " AND SKILL_DESCRIPTION <> '" . getSkillByID($_SESSION['skills'][0]) . "' ";
-        for ($x = 1; $x < sizeof($_SESSION['skills']); $x++) {
-            $condition = $condition . " AND SKILL_DESCRIPTION <> '" . getSkillByID($_SESSION['skills'][$x]) . "' ";
+    if (!$_SESSION['reporting']) {
+        if (sizeof($_SESSION['skills']) > 0) {
+            $condition = " AND SKILL_DESCRIPTION <> '" . getSkillByID($_SESSION['skills'][0]) . "' ";
+            for ($x = 1; $x < sizeof($_SESSION['skills']); $x++) {
+                $condition = $condition . " AND SKILL_DESCRIPTION <> '" . getSkillByID($_SESSION['skills'][$x]) . "' ";
+            }
         }
     }
     if ($search_text === '*')
@@ -192,6 +194,13 @@ function getRoleByID($ID) {
         endwhile;
     }
     return "";
+}
+
+function deleteEmpByID($ID) {
+    $query = "DELETE FROM b_employee_skills WHERE EMPLOYEE_ID = $ID";
+    executeSQLQuery($query);
+    $query = "DELETE FROM employees WHERE EMP_ID = $ID";
+    executeSQLQuery($query);
 }
 
 ?>

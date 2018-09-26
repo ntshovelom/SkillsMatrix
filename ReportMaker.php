@@ -29,6 +29,7 @@ function nextCol($letter) {
 }
 
 function createReport() {
+    $_SESSION['reporting'] = true;
     $search_text = $_SESSION['search_text'];
     include ('PHPExcel.php');
     $phpExcel = new PHPExcel;
@@ -86,35 +87,40 @@ function createReport() {
 //$phpExcel->getActiveSheet()->mergeCells($pRange = 'A1:A2');
 
     $col = 'D';
-    while ($row = mysqli_fetch_array($skills)) {
-        $sheet->getCell($col . 1)->setValue($row['SKILL_DESCRIPTION']);
-        $sheet->getColumnDimension($col)->setAutoSize(true);
-        $col = nextCol($col);
-    }
 
+    while ($row = mysqli_fetch_array($skills)) {
+        echo '<script>alert("' . $row['SKILL_ID'] . '-' . '")</script>';
+        if (in_array($row['SKILL_ID'], $_SESSION['skills'], TRUE)) {
+            $sheet->getCell($col . 1)->setValue($row['SKILL_DESCRIPTION']);
+            $sheet->getColumnDimension($col)->setAutoSize(true);
+            $col = nextCol($col);
+        }
+    }
     $sheet->getStyle('A1:' . $col . '1')->getFont()->setBold(true)->setSize(11);
     $x = 3;
     while ($row = mysqli_fetch_array($search_result)) {
         $sheet->getCell('B' . $x)->setValue($row['NAMES']);
-
-
-
         $sheet->getCell('C' . $x)->setValue($row['ROLE_DESCRIPTION']);
         $sheet->getCell('A' . $x)->setValue($row['DIV_DESCRIPTION']);
         $col1 = 'D';
         $skills = getSkillsAssociated($search_text);
         while ($row1 = mysqli_fetch_array($skills)) {
-            $level = getEmployeeSkillLevel($row['EMP_ID'], $row1['SKILL_ID']);
-            $sheet->getCell($col1 . $x)->setValue($level);
-            $col1 = nextCol($col1);
+            if (in_array($row1['SKILL_ID'], $_SESSION['skills'], TRUE)) {
+                $level = getEmployeeSkillLevel($row['EMP_ID'], $row1['SKILL_ID']);
+                $sheet->getCell($col1 . $x)->setValue($level);
+                $col1 = nextCol($col1);
+            }
         }
         $x++;
     }
-    $filename = "Reports/".$search_text . '-report.xlsx';
+
+    $filename = "Reports/" . $search_text . '-report.xlsx';
+
     if ($search_text === "*") {
-        $filename = 'All-report.xlsx';
+        $filename = 'Reports/All-report.xlsx';
     }
 
+    $_SESSION['reporting'] = false;
     $writer->save($filename);
     header("Location: $filename");
 }
