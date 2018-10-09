@@ -32,7 +32,8 @@ if (isset($_POST['btn_login'])) {
 
         $_SESSION['add_skills'] = array();
         $_SESSION['add_levels'] = array();
-        $_SESSION['hint'] = 'Enter keyword OR * to see all employees';
+
+        $_SESSION['update_id'] = '-1';
 
         header("Location: dashboard.php");
     }
@@ -75,11 +76,9 @@ if (isset($_POST['btn_login'])) {
                     <button  type="submit" class="btn btn-link">Forgot password? click here.</button>
                 </p>
         </div>
-
     </body>
 </html>
 <style>
-
     body {
         background-color: #f1f1f1;
         font: serif;

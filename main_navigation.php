@@ -28,9 +28,10 @@ if (isset($_SESSION['user'])) {
             <div class="collapse navbar-collapse" id="myNavbar">
                 <ul class="nav navbar-nav">
                     <!--                    <li class="active"><a href="dashboard.php">Home</a></li>-->
-                    <li><a href="new_resource.php">New Resource</a></li>
+                    <li><a href="new_resource_1.php">New Resource</a></li>
                     <li><a href="new_role.php">New Role</a></li>
                     <li><a href="new_skill.php">New Skill</a></li>
+                    <li><a href="adding_employees.php">SIYA FILE</a></li>
                 </ul>
             </div>
         </div>

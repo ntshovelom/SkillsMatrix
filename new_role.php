@@ -6,7 +6,6 @@ $allCateG = executeSQLQuery($queryCateG);
 $faildF = FALSE;
 
 if (isset($_POST['AddRole'])) {
-
     $query1 = "SELECT * FROM roles WHERE ROLE_DESCRIPTION = '$_POST[role]'";
     $result = executeSQLQuery($query1);
     $data = mysqli_fetch_array($result, MYSQLI_NUM);

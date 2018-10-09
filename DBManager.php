@@ -13,7 +13,7 @@ function getAllEmployees() {
         $query = $query . " AND e.shore <> 'Offshore'";
     }
 
-    $query = $query . " ORDER BY e.shore DESC, e.NAMES ASC";
+    $query = $query . " ORDER BY e.shore, e.NAMES ASC";
     return executeSQLQuery($query);
 }
 
@@ -76,6 +76,28 @@ function addResource($names, $shore, $role, $skill, $level) {
     $_SESSION['add_levels'] = array();
 }
 
+function getEmpNameByID($ID) {
+    $query = "SELECT NAMES FROM EMPLOYEES WHERE EMP_ID = '" . $ID . "'";
+    $result = executeSQLQuery($query);
+    if ($result->num_rows > 0) {
+        while ($row = mysqli_fetch_array($result)):
+            return $row['NAMES'];
+        endwhile;
+    }
+    return "";
+}
+
+function getEmpShoreByID($ID) {
+    $query = "SELECT SHORE FROM EMPLOYEES WHERE EMP_ID = '" . $ID . "'";
+    $result = executeSQLQuery($query);
+    if ($result->num_rows > 0) {
+        while ($row = mysqli_fetch_array($result)):
+            return $row['SHORE'];
+        endwhile;
+    }
+    return "";
+}
+
 function getSkillByID($ID) {
     $query = "SELECT SKILL_DESCRIPTION FROM SKILLS WHERE SKILL_ID = '" . $ID . "'";
     $result = executeSQLQuery($query);
@@ -129,7 +151,7 @@ function search($search_text) {
     } else if ($_SESSION['show_offshore'] === false && $_SESSION['show_onshore'] === true) {
         $query = $query . " AND e.shore <> 'Offshore'";
     }
-    $query = $query . " ORDER BY e.shore DESC, e.NAMES ";
+    $query = $query . " ORDER BY e.shore, e.NAMES ";
     return executeSQLQuery($query);
 }
 
@@ -183,6 +205,11 @@ function getLevelByID($ID) {
         endwhile;
     }
     return "";
+}
+
+function getRoles() {
+    $query = "SELECT ROLE_ID, ROLE_DESCRIPTION FROM roles ORDER BY ROLE_DESCRIPTION";
+    return executeSQLQuery($query);
 }
 
 function getRoleByID($ID) {

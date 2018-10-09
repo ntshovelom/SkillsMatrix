@@ -92,8 +92,9 @@ if (isset($_POST['btn_report'])) {
 while ($row = mysqli_fetch_array($search_result)) {
     if (isset($_POST[$row['EMP_ID'] . '_act_delete'])) {
         deleteEmpByID($row['EMP_ID']);
-    } else if (isset($_POST[$row['EMP_ID'] . '_act_update'])) {
-        //header("Location: new_resource.php");
+    } else if (isset($_POST[$row['EMP_ID'] . '_act_update']) && $_SESSION['search_text'] != "*") {
+        $_SESSION['update_id'] =  $row['EMP_ID'];
+        header("Location: new_resource.php");
     }
 }
 if ($_SESSION['search_text'] === "*") {
@@ -144,8 +145,7 @@ if ($_SESSION['search_text'] === "*") {
                                     </div>
                                     </th>
                                 <?php } ?>
-                                <th>
-                                </th>
+
 
                                 </tr>
                                 </thead>
@@ -165,7 +165,6 @@ if ($_SESSION['search_text'] === "*") {
                                         <td ><button  type="button" class="btn btn-link"><?php echo $row['NAMES']; ?> </button></td>
                                         <?php if ($_SESSION['show_division'] === true) { ?>
                                             <td><button  type="button" class="btn btn-link"><?php echo $row['DIV_DESCRIPTION']; ?> </button></td>
-
                                             <?php
                                         }
                                         if ($_SESSION['show_role'] === true) {
@@ -182,6 +181,8 @@ if ($_SESSION['search_text'] === "*") {
 
                                     </tr>
                                 <?php endwhile; ?>
+
+
                             </table>
                         </div>
                         <div style="position: absolute; right: 100px; top: 370px">
@@ -268,6 +269,8 @@ if ($_SESSION['search_text'] === "*") {
         width: 40%;
         margin: 0 auto;
     }
+
+
 </style>
 
 
